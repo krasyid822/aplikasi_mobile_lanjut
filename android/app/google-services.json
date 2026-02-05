@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "14085878797",
+    "project_id": "aplikasi-mobile-lanjut",
+    "storage_bucket": "aplikasi-mobile-lanjut.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:14085878797:android:80675fefa4b3aaef471144",
+        "android_client_info": {
+          "package_name": "com.example.aplikasi_mobile_lanjut"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "14085878797-ehgaa1qrct6ppg5oughd6n6ei00hmm6k.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAvgZgyAHIE_nuF9zsP1C6lDYkyGwBeGa8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "14085878797-ehgaa1qrct6ppg5oughd6n6ei00hmm6k.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
