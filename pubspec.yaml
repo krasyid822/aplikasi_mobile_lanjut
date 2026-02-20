@@ -38,6 +38,10 @@ dependencies:
   firebase_core: ^4.4.0
   path_provider: ^2.1.3
   open_filex: ^4.5.0
+  rename: ^3.1.0
+  flutter_launcher_icons: ^0.14.4
+  cloud_firestore: ^6.1.2
+  flutter_markdown: ^0.7.7+1
 
 dev_dependencies:
   flutter_test:
@@ -62,7 +66,8 @@ flutter:
   uses-material-design: true
 
   assets:
-    - assets/materi/Materi Praktik Aplikasi Mobile Lanjut.pdf
+    - assets/materi/
+    - assets/dokumentasi/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

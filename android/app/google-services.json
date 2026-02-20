@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:14085878797:android:80675fefa4b3aaef471144",
+        "mobilesdk_app_id": "1:14085878797:android:96d602dde0455557471144",
         "android_client_info": {
-          "package_name": "com.example.aplikasi_mobile_lanjut"
+          "package_name": "trpl6a.rasyid.aplikasi_mobile_lanjut"
         }
       },
       "oauth_client": [
@@ -20,7 +20,7 @@
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAvgZgyAHIE_nuF9zsP1C6lDYkyGwBeGa8"
+          "current_key": "AIzaSyDipaR_V6lUSS1ma8Z7fSKIlA2MSdFRrZo"
         }
       ],
       "services": {

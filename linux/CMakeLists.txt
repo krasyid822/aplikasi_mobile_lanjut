@@ -7,7 +7,7 @@ project(runner LANGUAGES CXX)
 set(BINARY_NAME "aplikasi_mobile_lanjut")
 # The unique GTK application identifier for this application. See:
 # https://wiki.gnome.org/HowDoI/ChooseApplicationID
-set(APPLICATION_ID "com.example.aplikasi_mobile_lanjut")
+set(APPLICATION_ID "trpl6a.rasyid.aplikasi_mobile_lanjut")
 
 # Explicitly opt in to modern CMake behaviors to avoid warnings with recent
 # versions of CMake.

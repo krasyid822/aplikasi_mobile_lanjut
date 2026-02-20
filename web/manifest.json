@@ -1,11 +1,11 @@
 {
-    "name": "aplikasi_mobile_lanjut",
-    "short_name": "aplikasi_mobile_lanjut",
+    "name": "Aplikasi Mobile Lanjut",
+    "short_name": "Aplikasi Mobile Lanjut",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "description": "Praktik Aplikasi Mobile Lanjut",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'week1_dashboard_page.dart';
 import 'week1_register_page.dart';
+import 'week2_dashboard_screen.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -24,7 +24,7 @@ class _LoginPageState extends State<LoginPage> {
       if (!mounted) return;
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (_) => DashboardPage()),
+        MaterialPageRoute(builder: (_) => Week2DashboardScreen()),
       );
     } on FirebaseAuthException catch (e) {
       if (!mounted) return;

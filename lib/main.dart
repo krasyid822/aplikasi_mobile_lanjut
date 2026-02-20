@@ -5,7 +5,9 @@ import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:open_filex/open_filex.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'week1_main.dart';
+import 'week2_main.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -35,12 +37,14 @@ class ModuleEntry {
   final String description;
   final WidgetBuilder builder;
   final String? learnAssetPath;
+  final List<String>? docsAssetPaths;
 
   const ModuleEntry({
     required this.title,
     required this.description,
     required this.builder,
     this.learnAssetPath,
+    this.docsAssetPaths,
   });
 
   bool matches(String q) {
@@ -66,6 +70,14 @@ class _HomeLauncherPageState extends State<HomeLauncherPage> {
       description: 'Login, register, reset password dengan Firebase Auth.',
       builder: (_) => const Week1App(),
       learnAssetPath: 'assets/materi/Materi Praktik Aplikasi Mobile Lanjut.pdf',
+      docsAssetPaths: const ['assets/dokumentasi/week1.md'],
+    ),
+    ModuleEntry(
+      title: 'Week 2 - CRUD Firestore',
+      description: 'Create, Read, Update, Delete data di Firestore.',
+      builder: (_) => const Week2App(),
+      learnAssetPath: 'assets/materi/Materi Ajar PAML CRUD.pdf',
+      docsAssetPaths: const ['assets/dokumentasi/week2.md'],
     ),
   ];
 
@@ -82,6 +94,61 @@ class _HomeLauncherPageState extends State<HomeLauncherPage> {
         context,
       ).showSnackBar(SnackBar(content: Text('Gagal membuka materi: $e')));
     }
+  }
+
+  Future<void> _openDocs(ModuleEntry module) async {
+    final docs = module.docsAssetPaths;
+    if (docs == null || docs.isEmpty) return;
+
+    Future<void> open(String path) async {
+      try {
+        final content = await rootBundle.loadString(path);
+        if (!mounted) return;
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) =>
+                _DocsPage(title: path.split('/').last, content: content),
+          ),
+        );
+      } catch (e) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Gagal membuka docs: $e')));
+      }
+    }
+
+    if (docs.length == 1) {
+      await open(docs.first);
+      return;
+    }
+
+    if (!mounted) return;
+    await showModalBottomSheet<void>(
+      context: context,
+      builder: (context) {
+        return SafeArea(
+          child: ListView.separated(
+            padding: const EdgeInsets.all(12),
+            itemCount: docs.length,
+            separatorBuilder: (_, index) => const Divider(height: 1),
+            itemBuilder: (context, index) {
+              final path = docs[index];
+              final name = path.split('/').last;
+              return ListTile(
+                leading: const Icon(Icons.description),
+                title: Text(name),
+                onTap: () {
+                  Navigator.of(context).pop();
+                  open(path);
+                },
+              );
+            },
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -166,6 +233,13 @@ class _HomeLauncherPageState extends State<HomeLauncherPage> {
                                         icon: const Icon(Icons.menu_book),
                                         label: const Text('Learn'),
                                       ),
+                                    if (module.docsAssetPaths?.isNotEmpty ==
+                                        true)
+                                      TextButton.icon(
+                                        onPressed: () => _openDocs(module),
+                                        icon: const Icon(Icons.description),
+                                        label: const Text('Docs'),
+                                      ),
                                     const SizedBox(width: 8),
                                     ElevatedButton.icon(
                                       onPressed: () {
@@ -190,6 +264,25 @@ class _HomeLauncherPageState extends State<HomeLauncherPage> {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _DocsPage extends StatelessWidget {
+  const _DocsPage({required this.title, required this.content});
+
+  final String title;
+  final String content;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text(title)),
+      body: Markdown(
+        padding: const EdgeInsets.all(16),
+        data: content,
+        selectable: true,
       ),
     );
   }

@@ -17,7 +17,10 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      return web;
+      throw UnsupportedError(
+        'DefaultFirebaseOptions have not been configured for web - '
+        'you can reconfigure this by running the FlutterFire CLI again.',
+      );
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
@@ -33,7 +36,10 @@ class DefaultFirebaseOptions {
           'you can reconfigure this by running the FlutterFire CLI again.',
         );
       case TargetPlatform.windows:
-        return windows;
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for windows - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
       case TargetPlatform.linux:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for linux - '
@@ -46,31 +52,11 @@ class DefaultFirebaseOptions {
     }
   }
 
-  static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyBTXNIgNQbHbhjyY1sGQjgSHV_OpOgci_0',
-    appId: '1:14085878797:web:39dd8a5cf0be0bdd471144',
-    messagingSenderId: '14085878797',
-    projectId: 'aplikasi-mobile-lanjut',
-    authDomain: 'aplikasi-mobile-lanjut.firebaseapp.com',
-    storageBucket: 'aplikasi-mobile-lanjut.firebasestorage.app',
-    measurementId: 'G-JB15ZBZ9X3',
-  );
-
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyAvgZgyAHIE_nuF9zsP1C6lDYkyGwBeGa8',
-    appId: '1:14085878797:android:80675fefa4b3aaef471144',
+    appId: '1:14085878797:android:96d602dde0455557471144',
     messagingSenderId: '14085878797',
     projectId: 'aplikasi-mobile-lanjut',
     storageBucket: 'aplikasi-mobile-lanjut.firebasestorage.app',
-  );
-
-  static const FirebaseOptions windows = FirebaseOptions(
-    apiKey: 'AIzaSyBTXNIgNQbHbhjyY1sGQjgSHV_OpOgci_0',
-    appId: '1:14085878797:web:9bdebe077f0dfc68471144',
-    messagingSenderId: '14085878797',
-    projectId: 'aplikasi-mobile-lanjut',
-    authDomain: 'aplikasi-mobile-lanjut.firebaseapp.com',
-    storageBucket: 'aplikasi-mobile-lanjut.firebasestorage.app',
-    measurementId: 'G-7TCN8TDHHQ',
   );
 }
