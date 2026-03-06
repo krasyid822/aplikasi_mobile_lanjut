@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'app_theme.dart';
 import 'week1_firebase_options.dart';
 import 'week1_login_page.dart';
 import 'week2_dashboard_screen.dart';
@@ -15,8 +16,8 @@ class Week2App extends StatelessWidget {
   const Week2App({super.key});
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
+    return AdaptiveMaterialApp(
+      title: 'Task 2 - CRUD Firestore',
       home: StreamBuilder<User?>(
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (context, snapshot) {

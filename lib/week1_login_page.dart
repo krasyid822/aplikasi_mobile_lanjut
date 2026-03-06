@@ -1,5 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+
 import 'week1_register_page.dart';
 import 'week2_dashboard_screen.dart';
 
@@ -14,13 +15,16 @@ class _LoginPageState extends State<LoginPage> {
   final formKey = GlobalKey<FormState>();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
-  Future login() async {
+
+  Future<void> login() async {
     if (formKey.currentState?.validate() != true) return;
+
     try {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: emailController.text.trim(),
         password: passwordController.text.trim(),
       );
+
       if (!mounted) return;
       Navigator.pushReplacement(
         context,
@@ -30,24 +34,26 @@ class _LoginPageState extends State<LoginPage> {
       if (!mounted) return;
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text(e.message!)));
+      ).showSnackBar(SnackBar(content: Text(e.message ?? 'Login gagal')));
     }
   }
 
-  Future resetPassword() async {
+  Future<void> resetPassword() async {
     if (emailController.text.trim().isEmpty) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Masukkan email untuk reset')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Masukkan email untuk reset')),
+      );
       return;
     }
+
     try {
       await FirebaseAuth.instance.sendPasswordResetEmail(
         email: emailController.text.trim(),
       );
+
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Link reset sudah dikirim ke email')),
+        const SnackBar(content: Text('Link reset sudah dikirim ke email')),
       );
     } on FirebaseAuthException catch (e) {
       if (!mounted) return;
@@ -67,66 +73,87 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Padding(
-          padding: EdgeInsets.all(25),
-          child: Form(
-            key: formKey,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.account_circle, size: 100),
-                SizedBox(height: 20),
-                TextFormField(
-                  controller: emailController,
-                  keyboardType: TextInputType.emailAddress,
-                  decoration: InputDecoration(
-                    labelText: "Email",
-                    border: OutlineInputBorder(),
+      body: SafeArea(
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return SingleChildScrollView(
+              padding: const EdgeInsets.all(25),
+              child: ConstrainedBox(
+                constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                child: Center(
+                  child: Form(
+                    key: formKey,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(Icons.account_circle, size: 100),
+                        const SizedBox(height: 20),
+                        TextFormField(
+                          controller: emailController,
+                          keyboardType: TextInputType.emailAddress,
+                          decoration: const InputDecoration(
+                            labelText: 'Email',
+                            border: OutlineInputBorder(),
+                          ),
+                          validator: (value) {
+                            final email = value?.trim() ?? '';
+                            if (email.isEmpty) return 'Email wajib diisi';
+
+                            final emailRegex = RegExp(
+                              r'^[\w\-.]+@[\w-]+\.[\w-]{2,4}$',
+                            );
+                            if (!emailRegex.hasMatch(email)) {
+                              return 'Format email tidak valid';
+                            }
+
+                            return null;
+                          },
+                        ),
+                        const SizedBox(height: 15),
+                        TextFormField(
+                          controller: passwordController,
+                          obscureText: true,
+                          decoration: const InputDecoration(
+                            labelText: 'Password',
+                            border: OutlineInputBorder(),
+                          ),
+                          validator: (value) {
+                            final password = value ?? '';
+                            if (password.isEmpty) return 'Password wajib diisi';
+                            if (password.length < 6) {
+                              return 'Minimal 6 karakter';
+                            }
+                            return null;
+                          },
+                        ),
+                        const SizedBox(height: 20),
+                        ElevatedButton(
+                          onPressed: login,
+                          child: const Text('Login'),
+                        ),
+                        TextButton(
+                          onPressed: resetPassword,
+                          child: const Text('Lupa password? Reset'),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const RegisterPage(),
+                              ),
+                            );
+                          },
+                          child: const Text('Belum punya akun? Daftar'),
+                        ),
+                      ],
+                    ),
                   ),
-                  validator: (value) {
-                    final email = value?.trim() ?? '';
-                    if (email.isEmpty) return 'Email wajib diisi';
-                    final emailRegex = RegExp(r"^[\w-\.]+@[\w-]+\.[\w-]{2,4}");
-                    if (!emailRegex.hasMatch(email)) {
-                      return 'Format email tidak valid';
-                    }
-                    return null;
-                  },
                 ),
-                SizedBox(height: 15),
-                TextFormField(
-                  controller: passwordController,
-                  obscureText: true,
-                  decoration: InputDecoration(
-                    labelText: "Password",
-                    border: OutlineInputBorder(),
-                  ),
-                  validator: (value) {
-                    final password = value ?? '';
-                    if (password.isEmpty) return 'Password wajib diisi';
-                    if (password.length < 6) return 'Minimal 6 karakter';
-                    return null;
-                  },
-                ),
-                SizedBox(height: 20),
-                ElevatedButton(onPressed: login, child: Text("Login")),
-                TextButton(
-                  onPressed: resetPassword,
-                  child: Text("Lupa password? Reset"),
-                ),
-                TextButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (_) => RegisterPage()),
-                    );
-                  },
-                  child: Text("Belum punya akun? Daftar"),
-                ),
-              ],
-            ),
-          ),
+              ),
+            );
+          },
         ),
       ),
     );
