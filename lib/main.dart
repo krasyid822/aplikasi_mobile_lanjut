@@ -7,6 +7,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:open_filex/open_filex.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
+import 'week3_supabase_config.dart';
 import 'app_theme.dart';
 import 'week1_main.dart';
 import 'week2_main.dart';
@@ -15,6 +16,7 @@ import 'week3_main.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  await ensureWeek3SupabaseInitialized();
   runApp(const LauncherApp());
 }
 
@@ -83,13 +85,14 @@ class _HomeLauncherPageState extends State<HomeLauncherPage> {
       cardBackgroundAssetPath: 'assets/background/week2.png',
     ),
     ModuleEntry(
-      title: 'Task 3 - Firebase Storage',
+      title: 'Task 3 - F̶i̶r̶e̶b̶a̶s̶e̶ Supabase Storage',
       description:
-          'Upload dan download file menggunakan Firebase Storage. Membangun aplikasi toko online dengan fitur upload gambar produk pada dasbor admin.',
+          'Upload dan download file menggunakan F̶i̶r̶e̶b̶a̶s̶e̶ Supabase Storage. Membangun aplikasi toko online dengan fitur upload gambar produk pada dasbor admin.',
       builder: (_) => Week3App(),
       learnAssetPath:
           'assets/materi/Membangun Aplikasi Toko Online Menggunakan Flutter dan Firebase.pdf',
       docsAssetPaths: const ['assets/dokumentasi/week3.md'],
+      cardBackgroundAssetPath: 'assets/background/week3.png',
     ),
   ];
 

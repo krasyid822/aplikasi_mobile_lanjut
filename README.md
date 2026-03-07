@@ -18,3 +18,7 @@ A few resources to get you started if this is your first Flutter project:
 For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
+
+tambahkan fitur chat diantara tombol belanja dan pofile/admin/login yang sudah ada, antara pelanggan dan admin bisa saling berkomunikasi melalui chat ini. dimode admin pengelolaanya lebih fleksibel, ada grup berdasar email misalnya
+
+salah, maksud saya bukan sudah berjalan tapi sisa waktu, dan gunakan gaya tampilan seperti tag status order berwarna oranye kemerahan
