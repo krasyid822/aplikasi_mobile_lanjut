@@ -8,15 +8,20 @@ import 'package:open_filex/open_filex.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'week3_supabase_config.dart';
+import 'week4_messaging_service.dart';
+import 'week4_supabase_messaging.dart';
 import 'app_theme.dart';
 import 'week1_main.dart';
 import 'week2_main.dart';
 import 'week3_main.dart';
+import 'week4_main.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   await ensureWeek3SupabaseInitialized();
+  await MessagingService.init();
+  await SupabaseMessagingService.init();
   runApp(const LauncherApp());
 }
 
@@ -93,6 +98,16 @@ class _HomeLauncherPageState extends State<HomeLauncherPage> {
           'assets/materi/Membangun Aplikasi Toko Online Menggunakan Flutter dan Firebase.pdf',
       docsAssetPaths: const ['assets/dokumentasi/week3.md'],
       cardBackgroundAssetPath: 'assets/background/week3.png',
+    ),
+    ModuleEntry(
+      title: 'Task 4 - Aplikasi Donasi Online',
+      description:
+          'Membangun aplikasi donasi online dengan fitur upload gambar campaign, halaman detail campaign, dan fitur donasi.',
+      builder: (_) => const Week4App(),
+      learnAssetPath:
+          'assets/materi/MATERI AJAR PRAKTIK.pdf',
+      docsAssetPaths: const ['assets/dokumentasi/week4.md'],
+      cardBackgroundAssetPath: 'assets/background/week4.png',
     ),
   ];
 

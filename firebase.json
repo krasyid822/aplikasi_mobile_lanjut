@@ -1,1 +1,22 @@
-{"flutter":{"platforms":{"android":{"default":{"projectId":"aplikasi-mobile-lanjut","appId":"1:14085878797:android:96d602dde0455557471144","fileOutput":"android/app/google-services.json"}},"dart":{"lib/firebase_options.dart":{"projectId":"aplikasi-mobile-lanjut","configurations":{"android":"1:14085878797:android:96d602dde0455557471144"}}}}}}
+{
+	"flutter": {
+		"platforms": {
+			"android": {
+				"default": {
+					"projectId": "aplikasi-mobile-lanjut",
+					"appId": "1:14085878797:android:96d602dde0455557471144",
+					"fileOutput": "android/app/google-services.json"
+				}
+			},
+			"dart": {
+				"lib/firebase_options.dart": {
+					"projectId": "aplikasi-mobile-lanjut",
+					"configurations": { "android": "1:14085878797:android:96d602dde0455557471144" }
+				}
+			}
+		}
+	},
+	"functions": {
+		"source": "functions"
+	}
+}
