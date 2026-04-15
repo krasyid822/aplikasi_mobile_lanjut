@@ -82,11 +82,12 @@ class FirestoreService {
   Stream<List<Donation>> getDonationsForUser(String userId) async* {
     // Try the indexed query first (requires composite index if not present).
     try {
-      await for (final snapshot in _db
-          .collection('donations')
-          .where('userId', isEqualTo: userId)
-          .orderBy('date', descending: true)
-          .snapshots()) {
+      await for (final snapshot
+          in _db
+              .collection('donations')
+              .where('userId', isEqualTo: userId)
+              .orderBy('date', descending: true)
+              .snapshots()) {
         final donations = snapshot.docs
             .map((d) => Donation.fromFirestore(d))
             .toList(growable: false);
@@ -97,11 +98,13 @@ class FirestoreService {
       // and perform client-side sorting to avoid crashing the listener.
       if (e is FirebaseException &&
           (e.code == 'failed-precondition' ||
-              (e.message != null && e.message!.contains('requires an index')))) {
-        await for (final snapshot in _db
-            .collection('donations')
-            .where('userId', isEqualTo: userId)
-            .snapshots()) {
+              (e.message != null &&
+                  e.message!.contains('requires an index')))) {
+        await for (final snapshot
+            in _db
+                .collection('donations')
+                .where('userId', isEqualTo: userId)
+                .snapshots()) {
           final donations = snapshot.docs
               .map((d) => Donation.fromFirestore(d))
               .toList(growable: false);
