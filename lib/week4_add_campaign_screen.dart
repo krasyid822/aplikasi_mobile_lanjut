@@ -9,7 +9,20 @@ import 'week4_storage_service.dart';
 import 'week4_firestore_service.dart';
 
 class AddCampaignScreen extends StatefulWidget {
-  const AddCampaignScreen({super.key});
+  final String? campaignId;
+  final String? initialTitle;
+  final String? initialDescription;
+  final int? initialTarget;
+  final String? initialImageUrl;
+
+  const AddCampaignScreen({
+    super.key,
+    this.campaignId,
+    this.initialTitle,
+    this.initialDescription,
+    this.initialTarget,
+    this.initialImageUrl,
+  });
 
   @override
   AddCampaignScreenState createState() => AddCampaignScreenState();
@@ -20,7 +33,17 @@ class AddCampaignScreenState extends State<AddCampaignScreen> {
   final TextEditingController _descCtrl = TextEditingController();
   final TextEditingController _targetCtrl = TextEditingController();
   File? _image;
+  String _existingImageUrl = '';
   bool _loading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _titleCtrl.text = widget.initialTitle ?? '';
+    _descCtrl.text = widget.initialDescription ?? '';
+    _targetCtrl.text = (widget.initialTarget ?? 0).toString();
+    _existingImageUrl = widget.initialImageUrl ?? '';
+  }
 
   Future<void> _pickImage() async {
     final picked = await ImagePicker().pickImage(source: ImageSource.gallery);
@@ -33,7 +56,8 @@ class AddCampaignScreenState extends State<AddCampaignScreen> {
     final title = _titleCtrl.text.trim();
     final desc = _descCtrl.text.trim();
     final target = int.tryParse(_targetCtrl.text.trim()) ?? 0;
-    if (title.isEmpty || desc.isEmpty || _image == null) {
+    final requiresImage = _image == null && _existingImageUrl.isEmpty;
+    if (title.isEmpty || desc.isEmpty || requiresImage) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Semua field harus diisi dan gambar dipilih'),
@@ -43,21 +67,39 @@ class AddCampaignScreenState extends State<AddCampaignScreen> {
     }
     setState(() => _loading = true);
     try {
-      final imageUrl = await StorageService().uploadImage(_image!);
+      String imageUrl = _existingImageUrl;
+      if (_image != null) {
+        imageUrl = await StorageService().uploadImage(_image!);
+      }
       final ownerId = FirebaseAuth.instance.currentUser?.uid ?? '';
-      await FirestoreService().addCampaign({
-        'title': title,
-        'description': desc,
-        'target': target,
-        'collected': 0,
-        'imageUrl': imageUrl,
-        'ownerId': ownerId,
-      });
+      final fs = FirestoreService();
+      if (widget.campaignId == null) {
+        await fs.addCampaign({
+          'title': title,
+          'description': desc,
+          'target': target,
+          'collected': 0,
+          'imageUrl': imageUrl,
+          'ownerId': ownerId,
+        });
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Campaign berhasil ditambahkan')),
+        );
+      } else {
+        await fs.updateCampaign(widget.campaignId!, {
+          'title': title,
+          'description': desc,
+          'target': target,
+          'imageUrl': imageUrl,
+        });
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Campaign berhasil diperbarui')),
+        );
+      }
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Campaign berhasil ditambahkan')),
-      );
-      Navigator.pop(context);
+      Navigator.pop(context, true);
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(
@@ -70,8 +112,11 @@ class AddCampaignScreenState extends State<AddCampaignScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isEditing = widget.campaignId != null;
     return Scaffold(
-      appBar: AppBar(title: const Text('Tambah Campaign')),
+      appBar: AppBar(
+        title: Text(isEditing ? 'Edit Campaign' : 'Tambah Campaign'),
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -95,6 +140,12 @@ class AddCampaignScreenState extends State<AddCampaignScreen> {
             const SizedBox(height: 12),
             _image != null
                 ? Image.file(_image!, height: 160, fit: BoxFit.cover)
+                : _existingImageUrl.isNotEmpty
+                ? Image.network(
+                    _existingImageUrl,
+                    height: 160,
+                    fit: BoxFit.cover,
+                  )
                 : const SizedBox(
                     height: 160,
                     child: Center(child: Text('Belum ada gambar')),
@@ -110,7 +161,9 @@ class AddCampaignScreenState extends State<AddCampaignScreen> {
                 ? const Center(child: CircularProgressIndicator())
                 : ElevatedButton(
                     onPressed: _save,
-                    child: const Text('Simpan Campaign'),
+                    child: Text(
+                      isEditing ? 'Perbarui Campaign' : 'Simpan Campaign',
+                    ),
                   ),
           ],
         ),

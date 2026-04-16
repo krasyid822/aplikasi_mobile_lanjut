@@ -124,4 +124,14 @@ class FirestoreService {
     final data = doc.data();
     return (data?['collected'] ?? 0) as int;
   }
+
+  Future<void> updateCampaign(String id, Map<String, dynamic> data) async {
+    final payload = Map<String, dynamic>.from(data);
+    payload['updatedAt'] = FieldValue.serverTimestamp();
+    await _db.collection('campaigns').doc(id).update(payload);
+  }
+
+  Future<void> deleteCampaign(String id) async {
+    await _db.collection('campaigns').doc(id).delete();
+  }
 }

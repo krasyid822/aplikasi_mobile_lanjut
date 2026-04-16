@@ -79,12 +79,17 @@ class HomeScreenState extends State<HomeScreen> {
           return ListView.builder(
             itemCount: campaigns.length,
             itemBuilder: (context, index) {
-              final data = campaigns[index];
-              final id = data.id;
-              final title = data['title'] ?? '';
-              final imageUrl = data['imageUrl'] ?? '';
-              final collected = data['collected'] ?? 0;
-              final target = data['target'] ?? 0;
+              final doc = campaigns[index];
+              final id = doc.id;
+              final raw =
+                  doc.data() as Map<String, dynamic>? ?? <String, dynamic>{};
+              final title = raw['title'] ?? '';
+              final imageUrl = raw['imageUrl'] ?? '';
+              final collected = raw['collected'] ?? 0;
+              final target = raw['target'] ?? 0;
+              final ownerId = raw['ownerId'] ?? '';
+              final currentUid = FirebaseAuth.instance.currentUser?.uid ?? '';
+              final canEdit = _role == 'admin' || ownerId == currentUid;
               return Card(
                 margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 child: ListTile(
@@ -105,10 +110,12 @@ class HomeScreenState extends State<HomeScreen> {
                         builder: (_) => CampaignDetailScreen(
                           id: id,
                           title: title,
-                          description: data['description'] ?? '',
+                          description: raw['description'] ?? '',
                           target: target,
                           collected: collected,
                           imageUrl: imageUrl,
+                          ownerId: ownerId,
+                          canEdit: canEdit,
                         ),
                       ),
                     );

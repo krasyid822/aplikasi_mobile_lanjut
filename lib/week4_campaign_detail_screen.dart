@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'week4_firestore_service.dart';
-import 'week4_payment_config.dart';
-import 'week4_payment_service.dart';
-import 'week4_payment_webview.dart';
+import 'week4_add_campaign_screen.dart';
 
 class CampaignDetailScreen extends StatefulWidget {
   final String id;
@@ -12,6 +10,8 @@ class CampaignDetailScreen extends StatefulWidget {
   final int target;
   final int collected;
   final String imageUrl;
+  final String ownerId;
+  final bool canEdit;
 
   const CampaignDetailScreen({
     super.key,
@@ -21,6 +21,8 @@ class CampaignDetailScreen extends StatefulWidget {
     required this.target,
     required this.collected,
     required this.imageUrl,
+    this.ownerId = '',
+    this.canEdit = false,
   });
 
   @override
@@ -48,47 +50,16 @@ class CampaignDetailScreenState extends State<CampaignDetailScreen> {
     }
     setState(() => _loading = true);
     try {
-      if (functionsBaseUrl.isNotEmpty) {
-        // Start Midtrans flow via backend and show WebView
-        final resp = await PaymentService.createMidtransTransaction(
-          campaignId: widget.id,
-          amount: amount,
-        );
-        final redirect = resp['redirect_url'] as String?;
-        final orderId = resp['orderId'] as String?;
-        if (redirect != null) {
-          if (!mounted) return;
-          await Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) =>
-                  PaymentWebViewScreen(url: redirect, orderId: orderId ?? ''),
-            ),
-          );
-          // After returning from WebView, show waiting message. Webhook will update Firestore.
-          if (!mounted) return;
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Pembayaran sedang diproses, cek Riwayat Donasi.'),
-            ),
-          );
-          _amountCtrl.clear();
-        } else {
-          throw Exception('Tidak menerima redirect dari payment gateway');
-        }
-      } else {
-        // Fallback: direct Firestore donation (no payment gateway)
-        await FirestoreService().donate(widget.id, amount);
-        // Refresh collected amount from server to reflect transaction result
-        final latest = await FirestoreService().getCampaignCollected(widget.id);
-        if (!mounted) return;
-        setState(() => _collected = latest);
-        if (!mounted) return;
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text('Donasi berhasil')));
-        _amountCtrl.clear();
-      }
+      await FirestoreService().donate(widget.id, amount);
+      // Refresh collected amount from server to reflect transaction result
+      final latest = await FirestoreService().getCampaignCollected(widget.id);
+      if (!mounted) return;
+      setState(() => _collected = latest);
+      if (!mounted) return;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Donasi berhasil')));
+      _amountCtrl.clear();
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(
@@ -99,11 +70,79 @@ class CampaignDetailScreenState extends State<CampaignDetailScreen> {
     }
   }
 
+  Future<void> _editCampaign() async {
+    final updated = await Navigator.push<bool?>(
+      context,
+      MaterialPageRoute(
+        builder: (_) => AddCampaignScreen(
+          campaignId: widget.id,
+          initialTitle: widget.title,
+          initialDescription: widget.description,
+          initialTarget: widget.target,
+          initialImageUrl: widget.imageUrl,
+        ),
+      ),
+    );
+    if (updated == true) {
+      if (!mounted) return;
+      Navigator.pop(context);
+    }
+  }
+
+  Future<void> _confirmDelete() async {
+    final shouldDelete = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Hapus campaign?'),
+        content: const Text('Yakin ingin menghapus campaign ini?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text('Batal'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: const Text('Hapus'),
+          ),
+        ],
+      ),
+    );
+    if (shouldDelete == true) {
+      try {
+        await FirestoreService().deleteCampaign(widget.id);
+        if (!mounted) return;
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('Campaign dihapus')));
+        Navigator.pop(context);
+      } catch (e) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Error: $e')));
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final progress = widget.target > 0 ? (_collected / widget.target) : 0.0;
     return Scaffold(
-      appBar: AppBar(title: Text(widget.title)),
+      appBar: AppBar(
+        title: Text(widget.title),
+        actions: widget.canEdit
+            ? [
+                IconButton(
+                  onPressed: _editCampaign,
+                  icon: const Icon(Icons.edit),
+                ),
+                IconButton(
+                  onPressed: _confirmDelete,
+                  icon: const Icon(Icons.delete),
+                ),
+              ]
+            : null,
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
