@@ -1,7 +1,12 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
+const emailFunctions = require('./email_notifications');
 
-admin.initializeApp();
+if (!admin.apps.length) {
+  admin.initializeApp();
+}
+
+Object.assign(exports, emailFunctions);
 
 /**
  * Send a topic notification when a new campaign is created.
@@ -123,3 +128,6 @@ exports.onDonationCreated = functions.firestore
 
     return null;
   });
+
+
+

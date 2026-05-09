@@ -15,6 +15,7 @@ import 'week1_main.dart';
 import 'week2_main.dart';
 import 'week3_main.dart';
 import 'week4_main.dart';
+import 'week5_main.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -108,6 +109,16 @@ class _HomeLauncherPageState extends State<HomeLauncherPage> {
           'assets/materi/MATERI AJAR PRAKTIK.pdf',
       docsAssetPaths: const ['assets/dokumentasi/week4.md'],
       cardBackgroundAssetPath: 'assets/background/week4.png',
+    ),
+    ModuleEntry(
+      title: 'Task 5 - Aplikasi Sistem Imformasi Akademik Mahasiswa',
+      description:
+      'Membangun aplikasi akademik untuk mengelola data akademik.',
+      builder: (_) => const Week5App(),
+      learnAssetPath:
+      'assets/materi/Aplikasi Mobile Sistem Informasi Akademik Mahasiswa.pdf',
+      docsAssetPaths: const ['assets/dokumentasi/week5.md'],
+      cardBackgroundAssetPath: 'assets/background/week5.png',
     ),
   ];
 
