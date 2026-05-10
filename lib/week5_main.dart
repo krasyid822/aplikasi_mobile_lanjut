@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
+import 'app_theme.dart';
 import 'week5_auth_service.dart';
 import 'week5_admin_service.dart';
 import 'week5_login_page.dart';
@@ -29,39 +30,9 @@ class Week5App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
+    return const AdaptiveMaterialApp(
       title: 'Sistem Informasi Akademik Mahasiswa',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
-        useMaterial3: true,
-        appBarTheme: AppBarTheme(
-          backgroundColor: Colors.blue.shade600,
-          foregroundColor: Colors.white,
-          elevation: 0,
-        ),
-        elevatedButtonTheme: ElevatedButtonThemeData(
-          style: ElevatedButton.styleFrom(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 24,
-              vertical: 12,
-            ),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-          ),
-        ),
-        inputDecorationTheme: InputDecorationTheme(
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: 16,
-            vertical: 12,
-          ),
-        ),
-      ),
-      home: const Week5RoleLanding(),
+      home: Week5RoleLanding(),
     );
   }
 }
@@ -130,7 +101,7 @@ class Week5RoleLanding extends StatelessWidget {
                   description: 'Lihat nilai dan laporan akademik',
                   color: Colors.blue,
                   onTap: () {
-                    Navigator.pushReplacement(
+                    Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => const Week5StudentAuthWrapper(),
@@ -146,7 +117,7 @@ class Week5RoleLanding extends StatelessWidget {
                   description: 'Input nilai dan kelola akademik',
                   color: Colors.orange,
                   onTap: () {
-                    Navigator.pushReplacement(
+                    Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => const Week5AdminAuthWrapper(),

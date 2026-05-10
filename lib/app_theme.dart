@@ -1,5 +1,6 @@
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class AdaptiveMaterialApp extends StatelessWidget {
   const AdaptiveMaterialApp({super.key, required this.home, this.title = ''});
@@ -26,7 +27,7 @@ class AdaptiveMaterialApp extends StatelessWidget {
           themeMode: ThemeMode.system,
           theme: _buildTheme(lightScheme),
           darkTheme: _buildTheme(darkScheme),
-          home: home,
+          home: _AppExitHandler(child: home),
         );
       },
     );
@@ -99,3 +100,63 @@ class AdaptiveMaterialApp extends StatelessWidget {
     );
   }
 }
+
+class _AppExitHandler extends StatelessWidget {
+  const _AppExitHandler({required this.child});
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) async {
+        if (didPop) return;
+
+        final innerNavigator = Navigator.of(context);
+        final rootNavigator = Navigator.of(context, rootNavigator: true);
+        final canPopRoot = rootNavigator.canPop();
+
+        if (innerNavigator.canPop()) {
+          innerNavigator.pop();
+        } else {
+          final shouldExit = await showDialog<bool>(
+            context: context,
+            builder: (context) => AlertDialog(
+              title: Text(canPopRoot ? 'Keluar Modul' : 'Keluar Aplikasi'),
+              content: Text(
+                canPopRoot
+                    ? 'Apakah Anda yakin ingin kembali ke menu utama?'
+                    : 'Apakah Anda yakin ingin menutup aplikasi?',
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context, false),
+                  child: const Text('Batal'),
+                ),
+                TextButton(
+                  onPressed: () => Navigator.pop(context, true),
+                  child: Text(
+                    canPopRoot ? 'Ya, Kembali' : 'Keluar',
+                    style: const TextStyle(color: Colors.red),
+                  ),
+                ),
+              ],
+            ),
+          );
+
+          if (shouldExit == true && context.mounted) {
+            if (canPopRoot) {
+              rootNavigator.pop();
+            } else {
+              SystemNavigator.pop();
+            }
+          }
+        }
+      },
+      child: child,
+    );
+  }
+}
+
+// I need to import SystemChannels and HomeLauncherPage might not be available here.
+// Let's check imports.

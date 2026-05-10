@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'app_theme.dart';
 import 'week4_login_screen.dart';
 
 void main() async {
@@ -13,10 +14,9 @@ class Week4App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const AdaptiveMaterialApp(
       title: 'Aplikasi Donasi',
-      debugShowCheckedModeBanner: false,
-      home: const LoginScreen(),
+      home: LoginScreen(),
     );
   }
 }

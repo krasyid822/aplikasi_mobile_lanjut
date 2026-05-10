@@ -22,12 +22,12 @@ class Week1App extends StatelessWidget {
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Scaffold(body: Center(child: CircularProgressIndicator()));
+            return const Scaffold(body: Center(child: CircularProgressIndicator()));
           }
           if (snapshot.hasData) {
-            return DashboardPage();
+            return const DashboardPage();
           }
-          return LoginPage();
+          return const LoginPage();
         },
       ),
     );
