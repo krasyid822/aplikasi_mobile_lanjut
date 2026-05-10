@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart';
+import 'week1_firebase_options.dart';
 import 'app_theme.dart';
 import 'week5_auth_service.dart';
 import 'week5_admin_service.dart';

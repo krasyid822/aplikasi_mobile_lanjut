@@ -10,6 +10,7 @@ import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'week3_supabase_config.dart';
 import 'week4_messaging_service.dart';
 import 'week4_supabase_messaging.dart';
+import 'week1_firebase_options.dart';
 import 'app_theme.dart';
 import 'week1_main.dart';
 import 'week2_main.dart';
@@ -19,7 +20,9 @@ import 'week5_main.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   await ensureWeek3SupabaseInitialized();
   await MessagingService.init();
   await SupabaseMessagingService.init();
@@ -118,7 +121,7 @@ class _HomeLauncherPageState extends State<HomeLauncherPage> {
       learnAssetPath:
       'assets/materi/Aplikasi Mobile Sistem Informasi Akademik Mahasiswa.pdf',
       docsAssetPaths: const ['assets/dokumentasi/week5.md'],
-      cardBackgroundAssetPath: 'assets/background/week5.jpeg',
+      cardBackgroundAssetPath: 'assets/background/week5.png',
     ),
   ];
 
@@ -316,202 +319,202 @@ class _HomeLauncherPageState extends State<HomeLauncherPage> {
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              TextField(
-                controller: searchController,
-                decoration: InputDecoration(
-                  prefixIcon: const Icon(Icons.search),
-                  labelText: 'Cari modul',
-                  border: const OutlineInputBorder(),
-                  suffixIcon: searchController.text.isNotEmpty
-                      ? IconButton(
-                          icon: const Icon(Icons.clear),
-                          onPressed: () {
-                            searchController.clear();
-                            setState(() {});
-                          },
-                        )
-                      : null,
-                ),
-                onChanged: (_) => setState(() {}),
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            TextField(
+              controller: searchController,
+              decoration: InputDecoration(
+                prefixIcon: const Icon(Icons.search),
+                labelText: 'Cari modul',
+                border: const OutlineInputBorder(),
+                suffixIcon: searchController.text.isNotEmpty
+                    ? IconButton(
+                        icon: const Icon(Icons.clear),
+                        onPressed: () {
+                          searchController.clear();
+                          setState(() {});
+                        },
+                      )
+                    : null,
               ),
-              const SizedBox(height: 16),
-              Expanded(
-                child: filtered.isEmpty
-                    ? const Center(child: Text('Modul tidak ditemukan'))
-                    : ListView.separated(
-                        itemCount: filtered.length,
-                        separatorBuilder: (context, _) =>
-                            const SizedBox(height: 12),
-                        itemBuilder: (context, index) {
-                          final module = filtered[index];
-                          final colorScheme = Theme.of(context).colorScheme;
-                          final cardBaseColor = _resolveCardBaseColor(
-                            colorScheme,
-                            module,
-                          );
-                          final cardForegroundColor = _resolveCardForegroundColor(
-                            cardBaseColor,
-                          );
-                          return Card(
-                            elevation: 2,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            clipBehavior: Clip.antiAlias,
-                            child: Padding(
-                              padding: EdgeInsets.zero,
+              onChanged: (_) => setState(() {}),
+            ),
+            const SizedBox(height: 16),
+            Expanded(
+              child: filtered.isEmpty
+                  ? const Center(child: Text('Modul tidak ditemukan'))
+                  : ListView.separated(
+                      itemCount: filtered.length,
+                      separatorBuilder: (context, _) =>
+                          const SizedBox(height: 12),
+                      itemBuilder: (context, index) {
+                        final module = filtered[index];
+                        final colorScheme = Theme.of(context).colorScheme;
+                        final cardBaseColor = _resolveCardBaseColor(
+                          colorScheme,
+                          module,
+                        );
+                        final cardForegroundColor = _resolveCardForegroundColor(
+                          cardBaseColor,
+                        );
+                        return Card(
+                          elevation: 2,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          clipBehavior: Clip.antiAlias,
+                          child: Padding(
+                            padding: EdgeInsets.zero,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: cardBaseColor,
+                                image: module.cardBackgroundAssetPath != null
+                                    ? DecorationImage(
+                                        image: AssetImage(
+                                          module.cardBackgroundAssetPath!,
+                                        ),
+                                        fit: BoxFit.contain,
+                                        alignment: Alignment.centerRight,
+                                      )
+                                    : null,
+                              ),
                               child: Container(
+                                padding: const EdgeInsets.all(16),
                                 decoration: BoxDecoration(
-                                  color: cardBaseColor,
-                                  image: module.cardBackgroundAssetPath != null
-                                      ? DecorationImage(
-                                          image: AssetImage(
-                                            module.cardBackgroundAssetPath!,
-                                          ),
-                                          fit: BoxFit.contain,
-                                          alignment: Alignment.centerRight,
+                                  gradient:
+                                      module.cardBackgroundAssetPath != null
+                                      ? LinearGradient(
+                                          begin: Alignment.topCenter,
+                                          end: Alignment.bottomCenter,
+                                          colors: [
+                                            Colors.transparent,
+                                            Colors.black.withValues(
+                                              alpha: 0.18,
+                                            ),
+                                          ],
                                         )
                                       : null,
                                 ),
-                                child: Container(
-                                  padding: const EdgeInsets.all(16),
-                                  decoration: BoxDecoration(
-                                    gradient:
-                                        module.cardBackgroundAssetPath != null
-                                        ? LinearGradient(
-                                            begin: Alignment.topCenter,
-                                            end: Alignment.bottomCenter,
-                                            colors: [
-                                              Colors.transparent,
-                                              Colors.black.withValues(
-                                                alpha: 0.18,
-                                              ),
-                                            ],
-                                          )
-                                        : null,
-                                  ),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        module.title,
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .titleMedium
-                                            ?.copyWith(
-                                              fontWeight: FontWeight.bold,
-                                              color:
-                                                  module.cardBackgroundAssetPath !=
-                                                      null
-                                                  ? cardForegroundColor
-                                                  : null,
-                                            ),
-                                      ),
-                                      const SizedBox(height: 6),
-                                      Text(
-                                        module.description,
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodyMedium
-                                            ?.copyWith(
-                                              color:
-                                                  module.cardBackgroundAssetPath !=
-                                                      null
-                                                  ? cardForegroundColor
-                                                        .withValues(alpha: 0.82)
-                                                  : null,
-                                            ),
-                                      ),
-                                      const SizedBox(height: 12),
-                                      Row(
-                                        children: [
-                                          Expanded(
-                                            child: SingleChildScrollView(
-                                              scrollDirection: Axis.horizontal,
-                                              child: Row(
-                                                children: [
-                                                  if (module.learnAssetPath !=
-                                                      null)
-                                                    TextButton.icon(
-                                                      onPressed: () => _openLearn(
-                                                        module.learnAssetPath!,
-                                                        module.learnAssetPath!
-                                                            .split('/')
-                                                            .last,
-                                                      ),
-                                                      icon: const Icon(
-                                                        Icons.menu_book,
-                                                      ),
-                                                      label: const Text('Learn'),
-                                                      style:
-                                                          module.cardBackgroundAssetPath !=
-                                                              null
-                                                          ? TextButton.styleFrom(
-                                                              foregroundColor:
-                                                                  cardForegroundColor,
-                                                            )
-                                                          : null,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      module.title,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleMedium
+                                          ?.copyWith(
+                                            fontWeight: FontWeight.bold,
+                                            color:
+                                                module.cardBackgroundAssetPath !=
+                                                    null
+                                                ? cardForegroundColor
+                                                : null,
+                                          ),
+                                    ),
+                                    const SizedBox(height: 6),
+                                    Text(
+                                      module.description,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium
+                                          ?.copyWith(
+                                            color:
+                                                module.cardBackgroundAssetPath !=
+                                                    null
+                                                ? cardForegroundColor
+                                                      .withValues(alpha: 0.82)
+                                                : null,
+                                          ),
+                                    ),
+                                    const SizedBox(height: 12),
+                                    Row(
+                                      children: [
+                                        Expanded(
+                                          child: SingleChildScrollView(
+                                            scrollDirection: Axis.horizontal,
+                                            child: Row(
+                                              children: [
+                                                if (module.learnAssetPath !=
+                                                    null)
+                                                  TextButton.icon(
+                                                    onPressed: () => _openLearn(
+                                                      module.learnAssetPath!,
+                                                      module.learnAssetPath!
+                                                          .split('/')
+                                                          .last,
                                                     ),
-                                                  if (module.learnAssetPath !=
-                                                          null &&
-                                                      module
-                                                              .docsAssetPaths
-                                                              ?.isNotEmpty ==
-                                                          true)
-                                                    const SizedBox(width: 8),
-                                                  if (module
-                                                          .docsAssetPaths
-                                                          ?.isNotEmpty ==
-                                                      true)
-                                                    TextButton.icon(
-                                                      onPressed: () =>
-                                                          _openDocs(module),
-                                                      icon: const Icon(
-                                                        Icons.description,
-                                                      ),
-                                                      label: const Text('Docs'),
-                                                      style:
-                                                          module.cardBackgroundAssetPath !=
-                                                              null
-                                                          ? TextButton.styleFrom(
-                                                              foregroundColor:
-                                                                  cardForegroundColor,
-                                                            )
-                                                          : null,
+                                                    icon: const Icon(
+                                                      Icons.menu_book,
                                                     ),
-                                                ],
-                                              ),
+                                                    label: const Text('Learn'),
+                                                    style:
+                                                        module.cardBackgroundAssetPath !=
+                                                            null
+                                                        ? TextButton.styleFrom(
+                                                            foregroundColor:
+                                                                cardForegroundColor,
+                                                          )
+                                                        : null,
+                                                  ),
+                                                if (module.learnAssetPath !=
+                                                        null &&
+                                                    module
+                                                            .docsAssetPaths
+                                                            ?.isNotEmpty ==
+                                                        true)
+                                                  const SizedBox(width: 8),
+                                                if (module
+                                                        .docsAssetPaths
+                                                        ?.isNotEmpty ==
+                                                    true)
+                                                  TextButton.icon(
+                                                    onPressed: () =>
+                                                        _openDocs(module),
+                                                    icon: const Icon(
+                                                      Icons.description,
+                                                    ),
+                                                    label: const Text('Docs'),
+                                                    style:
+                                                        module.cardBackgroundAssetPath !=
+                                                            null
+                                                        ? TextButton.styleFrom(
+                                                            foregroundColor:
+                                                                cardForegroundColor,
+                                                          )
+                                                        : null,
+                                                  ),
+                                              ],
                                             ),
                                           ),
-                                          const SizedBox(width: 8),
-                                          ElevatedButton.icon(
-                                            onPressed: () {
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: module.builder,
-                                                ),
-                                              );
-                                            },
-                                            icon: const Icon(Icons.play_arrow),
-                                            label: const Text('Launch'),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
+                                        ),
+                                        const SizedBox(width: 8),
+                                        ElevatedButton.icon(
+                                          onPressed: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: module.builder,
+                                              ),
+                                            );
+                                          },
+                                          icon: const Icon(Icons.play_arrow),
+                                          label: const Text('Launch'),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
                                 ),
                               ),
                             ),
-                          );
-                        },
-                      ),
-              ),
-            ],
-          ),
+                          ),
+                        );
+                      },
+                    ),
+            ),
+          ],
         ),
+      ),
     );
   }
 }
