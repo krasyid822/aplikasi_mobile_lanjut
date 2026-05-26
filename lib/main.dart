@@ -7,25 +7,42 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:open_filex/open_filex.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
-import 'week3_supabase_config.dart';
-import 'week4_messaging_service.dart';
-import 'week4_supabase_messaging.dart';
-import 'week1_firebase_options.dart';
+import 'task3/logic/services/supabase_config.dart';
+import 'task4/logic/services/messaging_service.dart';
+import 'task4/logic/services/supabase_messaging.dart';
+import 'task1/logic/services/firebase_options.dart';
 import 'app_theme.dart';
-import 'week1_main.dart';
-import 'week2_main.dart';
-import 'week3_main.dart';
-import 'week4_main.dart';
-import 'week5_main.dart';
+import 'task1/task1_main.dart';
+import 'task2/task2_main.dart';
+import 'task3/task3_main.dart';
+import 'task4/task4_main.dart';
+import 'task5/task5_main.dart';
+import 'task6/uas_main.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-  await ensureWeek3SupabaseInitialized();
-  await MessagingService.init();
-  await SupabaseMessagingService.init();
+  
+  try {
+    // Firebase is usually critical for the app's initial state if using Auth
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+    
+    // Non-critical services or services that might hang due to network
+    // initialized in a way that they don't block the UI forever
+    Future.wait([
+      ensureWeek3SupabaseInitialized().catchError((e) => debugPrint("Supabase Init Error: $e")),
+      MessagingService.init().catchError((e) => debugPrint("Messaging Init Error: $e")),
+      SupabaseMessagingService.init().catchError((e) => debugPrint("Supabase Messaging Init Error: $e")),
+    ]).timeout(const Duration(seconds: 5), onTimeout: () {
+      debugPrint("Service initialization timed out, continuing to app...");
+      return [];
+    });
+    
+  } catch (e) {
+    debugPrint("Critical Initialization Error: $e");
+  }
+
   runApp(const LauncherApp());
 }
 
@@ -81,17 +98,17 @@ class _HomeLauncherPageState extends State<HomeLauncherPage> {
       title: 'Task 1 - Firebase Auth',
       description: 'Login, register, reset password dengan Firebase Auth.',
       builder: (_) => const Week1App(),
-      learnAssetPath: 'assets/materi/Materi Praktik Aplikasi Mobile Lanjut.pdf',
-      docsAssetPaths: const ['assets/dokumentasi/week1.md'],
-      cardBackgroundAssetPath: 'assets/background/week1.png',
+      learnAssetPath: 'assets/materi/01 Materi Praktik Aplikasi Mobile Lanjut.pdf',
+      docsAssetPaths: const ['assets/dokumentasi/task1.md'],
+      cardBackgroundAssetPath: 'assets/background/task1.png',
     ),
     ModuleEntry(
       title: 'Task 2 - CRUD Firestore',
       description: 'Create, Read, Update, Delete data di Firestore.',
       builder: (_) => const Week2App(),
-      learnAssetPath: 'assets/materi/Materi Ajar PAML CRUD.pdf',
-      docsAssetPaths: const ['assets/dokumentasi/week2.md'],
-      cardBackgroundAssetPath: 'assets/background/week2.png',
+      learnAssetPath: 'assets/materi/02 Materi Ajar PAML CRUD.pdf',
+      docsAssetPaths: const ['assets/dokumentasi/task2.md'],
+      cardBackgroundAssetPath: 'assets/background/task2.png',
     ),
     ModuleEntry(
       title: 'Task 3 - F̶i̶r̶e̶b̶a̶s̶e̶ Supabase Storage',
@@ -99,9 +116,9 @@ class _HomeLauncherPageState extends State<HomeLauncherPage> {
           'Upload dan download file menggunakan F̶i̶r̶e̶b̶a̶s̶e̶ Supabase Storage. Membangun aplikasi toko online dengan fitur upload gambar produk pada dasbor admin.',
       builder: (_) => Week3App(),
       learnAssetPath:
-          'assets/materi/Membangun Aplikasi Toko Online Menggunakan Flutter dan Firebase.pdf',
-      docsAssetPaths: const ['assets/dokumentasi/week3.md'],
-      cardBackgroundAssetPath: 'assets/background/week3.png',
+          'assets/materi/03 Membangun Aplikasi Toko Online Menggunakan Flutter dan Firebase.pdf',
+      docsAssetPaths: const ['assets/dokumentasi/task3.md'],
+      cardBackgroundAssetPath: 'assets/background/task3.png',
     ),
     ModuleEntry(
       title: 'Task 4 - Aplikasi Donasi Online',
@@ -109,9 +126,9 @@ class _HomeLauncherPageState extends State<HomeLauncherPage> {
           'Membangun aplikasi donasi online dengan fitur upload gambar campaign, halaman detail campaign, dan fitur donasi.',
       builder: (_) => const Week4App(),
       learnAssetPath:
-          'assets/materi/MATERI AJAR PRAKTIK.pdf',
-      docsAssetPaths: const ['assets/dokumentasi/week4.md'],
-      cardBackgroundAssetPath: 'assets/background/week4.png',
+          'assets/materi/04 MATERI AJAR PRAKTIK.pdf',
+      docsAssetPaths: const ['assets/dokumentasi/task4.md'],
+      cardBackgroundAssetPath: 'assets/background/task4.png',
     ),
     ModuleEntry(
       title: 'Task 5 - Aplikasi Sistem Imformasi Akademik Mahasiswa',
@@ -119,9 +136,19 @@ class _HomeLauncherPageState extends State<HomeLauncherPage> {
       'Membangun aplikasi akademik untuk mengelola data akademik.',
       builder: (_) => const Week5App(),
       learnAssetPath:
-      'assets/materi/Aplikasi Mobile Sistem Informasi Akademik Mahasiswa.pdf',
-      docsAssetPaths: const ['assets/dokumentasi/week5.md'],
-      cardBackgroundAssetPath: 'assets/background/week5.png',
+      'assets/materi/05 Aplikasi Mobile Sistem Informasi Akademik Mahasiswa.pdf',
+      docsAssetPaths: const ['assets/dokumentasi/task5.md'],
+      cardBackgroundAssetPath: 'assets/background/task5.jpeg',
+    ),
+    ModuleEntry(
+      title: 'UAS - Local AI Agent',
+      description:
+      'Implementasi Google Gemma RTLite menggunakan HuggingFace untuk agen percakapan lokal.',
+      builder: (_) => const UasApp(),
+      learnAssetPath:
+      'assets/materi/06 Judul Project UAS.txt',
+      docsAssetPaths: const ['assets/dokumentasi/task6_uas.md'],
+      cardBackgroundAssetPath: 'assets/background/task6_uas.png',
     ),
   ];
 

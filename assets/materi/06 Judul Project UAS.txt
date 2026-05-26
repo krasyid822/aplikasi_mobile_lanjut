@@ -1,0 +1,19 @@
+Silakan tulis judul project pribadi berbasis flutter dan firebase di grup ini agar tidak ada judul yg sama.
+No. Nama            Judul
+1.  Amelia Cahya Nabila - Aplikasi Pengelolaan Keuangan Pribadi (MyFinance)
+2. Calysta Adelia Putri Zulfa - Aplikasi Peminjaman dan Review Buku Digital (BookHive)
+3. Azura T. N. Barus - aplikasi pembagian tagihan / splitbill (splitease)
+4. Putri Aprilia - Aplikasi panduan P3K dan daftar nomor darurat ( AegisPocket )
+5. Hamdi Harahap - BookshelfApp
+6. mika sianturi-Aplikasi Pencarian dan Manajemen Kos-kosan (KosKita)
+7. Khairuly Elisa - StudyMate — Aplikasi Jadwal & Tugas Mahasiswa
+8. Imanuel Reformata Hulu - Aplikasi Booking Lapangan Futsal
+9. Masro- BMI Calculator – Kalkulator berat badan ideal
+10. ⁠ Farhan Sadiq Alfaritzi Munthe - BloodShare – Platform Digital Penghubung Pendonor Darah Sukarela
+11. Lukman Ramadhan - SkillTrack – Aplikasi Pencatat Progres Belajar Skill Pribadi
+12. Indah Dui Karina Berutu - LapakPolmed – Aplikasi Jual Beli Barang Mahasiswa Berbasis Flutter dan Firebase
+13. Dio Meydistra Ginting - FixYooo - Aplikasi Katalog Bengkel & Reservasi Service
+14. Samalona SImanjuntak - Hanzi Memory Flip - Game Mencocokkan Kartu Dalam Bahasa China
+15. Rasyid Kurniawan - Local AI Agent
+16. ⁠Garry nicholin kacaribu -    E-comerce Mini (Toko aksesoris HP) - GadgetZone
+dst
