@@ -37,6 +37,7 @@ dependencies:
   restart_app: ^1.8.3
   permission_handler: ^12.0.1
   marquee: ^2.3.0
+  flutter_dotenv: ^6.0.1
 
 dev_dependencies:
   flutter_test:
@@ -55,3 +56,4 @@ flutter:
     - assets/materi/
     - assets/dokumentasi/
     - assets/background/
+    - lib/task6/.env

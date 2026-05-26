@@ -4,25 +4,27 @@ import 'package:flutter_gemma/flutter_gemma.dart';
 import 'package:dio/dio.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class GemmaService {
   static const String gpuModelUrl = "https://huggingface.co/google/gemma-2b-it-tflite/resolve/main/gemma-2b-it-gpu-int4.bin";
   static const String cpuModelUrl = "https://huggingface.co/google/gemma-2b-it-tflite/resolve/main/gemma-2b-it-cpu-int4.bin";
-  static const String hfToken = "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";
+  
+  static String get hfToken => dotenv.env['HF_TOKEN'] ?? "";
 
   static bool _isInitialized = false;
 
   Future<void> initialize() async {
     if (_isInitialized) return;
+    // Load .env file before initializing FlutterGemma
+    await dotenv.load(fileName: "lib/task6/.env");
     await FlutterGemma.initialize(huggingFaceToken: hfToken);
     _isInitialized = true;
   }
 
   Future<bool> requestStoragePermission() async {
     if (Platform.isAndroid) {
-      // Android 11+ memerlukan Manage External Storage untuk folder publik
       if (await Permission.manageExternalStorage.isGranted) return true;
-      
       final status = await Permission.manageExternalStorage.request();
       return status.isGranted;
     }
@@ -31,8 +33,6 @@ class GemmaService {
 
   Future<String> getLocalPath(String url) async {
     final fileName = url.contains("cpu") ? "gemma-2b-it-cpu-int4.bin" : "gemma-2b-it-gpu-int4.bin";
-    
-    // Mencoba beberapa path umum untuk folder Download di Android
     final List<String> possiblePaths = [
       '/storage/emulated/0/Download/ai_bin',
       '/sdcard/Download/ai_bin',
@@ -52,7 +52,6 @@ class GemmaService {
       }
     }
 
-    // Fallback ke penyimpanan internal jika semua path eksternal gagal
     if (targetDir == null) {
       final internal = await getApplicationDocumentsDirectory();
       targetDir = Directory("${internal.path}/ai_bin");
@@ -66,9 +65,6 @@ class GemmaService {
     final path = await getLocalPath(url);
     final file = File(path);
     if (!await file.exists()) return false;
-    
-    // Validasi Ukuran: Gemma 2B INT4 harusnya > 1 GB (1,000,000,000 bytes)
-    // Jika kurang dari itu, berarti unduhan gagal/terpotong
     final size = await file.length();
     return size > 1000000000;
   }
